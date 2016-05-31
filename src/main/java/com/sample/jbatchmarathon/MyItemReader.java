@@ -1,18 +1,29 @@
 package com.sample.jbatchmarathon;
 
+import com.sample.jbatchmarathon.domain.Race;
 import com.sample.jbatchmarathon.domain.Runner;
+import com.sample.jbatchmarathon.util.CalendarUtil;
 import java.io.BufferedReader;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import javax.batch.runtime.context.JobContext;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
- *
+ *ファイルのRead処理です。
+ * <pre>
+ * 責務としては、マルチレイアウトファイルがJavaで扱いづらいので
+ * Processor以降が意識しなくても済むようにこのレイヤで吸収します。
+ * </pre>
+ * 
  * @author akira_abe
  */
+@Named
+@Dependent
 public class MyItemReader implements javax.batch.api.chunk.ItemReader {
 
     @Inject
@@ -30,10 +41,10 @@ public class MyItemReader implements javax.batch.api.chunk.ItemReader {
 
     @Override
     public void open(Serializable checkpoint) throws Exception {
+        
         System.out.println("ItemReader open.");
-        String dirName = jobContext.getProperties().getProperty("dir");
         String fileName = jobContext.getProperties().getProperty("input_file");
-        br = Files.newBufferedReader(Paths.get(dirName, fileName), StandardCharsets.UTF_8);
+        br = Files.newBufferedReader(Paths.get(fileName), StandardCharsets.UTF_8);
     }
 
     @Override
@@ -69,8 +80,8 @@ public class MyItemReader implements javax.batch.api.chunk.ItemReader {
                 hasNext = false;
             }
 
-            // TODO:判定条件は正しくはトレーラーレコードが来たらとするべきか？
-            if (null == line || !prevLine.substring(4, 7).equals(line.substring(4, 7))) {
+            // TODO: substring(0,4)ではあまりにも意味不明なので時間があればどうにかします。
+            if (null == line || !prevLine.substring(0, 4).equals(line.substring(0, 4))) {
                 break;
             }
         }
@@ -96,8 +107,22 @@ public class MyItemReader implements javax.batch.api.chunk.ItemReader {
         if (line == null) {
             return null;
         }
-        Runner vo = new Runner();
-        return vo;
+        String[] values = line.split(",");
+                
+        if("Runner".equals(values[1])) {
+            runner.setId(Integer.parseInt(values[0]));
+            runner.setName(values[2]);
+            runner.setBirthDay(CalendarUtil.toDate(values[3]));
+        } else {
+            Race race = new Race();
+            race.setName(values[2]);
+            race.setDate(CalendarUtil.toDate(values[3]));
+            race.setDistance(Double.parseDouble(values[4]));
+            race.setResult(values[5]);
+            runner.add(race);
+        }
+        
+        return runner;
     }
 
 }

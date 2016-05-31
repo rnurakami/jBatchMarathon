@@ -9,7 +9,7 @@ import java.util.Date;
  * 
  * @author akira_abe
  */
-class Race implements Serializable{
+public class Race implements Serializable{
 
     /**大会名*/
     private String name;

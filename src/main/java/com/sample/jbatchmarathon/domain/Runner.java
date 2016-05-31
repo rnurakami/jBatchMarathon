@@ -1,9 +1,12 @@
 package com.sample.jbatchmarathon.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Logger;
 
 /**
@@ -14,7 +17,11 @@ import java.util.logging.Logger;
 public class Runner implements Serializable {
 
     private static final Logger LOG = Logger.getLogger(Runner.class.getName());
-    
+
+    /**
+     * ID
+     */
+    private Integer id;
     /**
      * 名前
      */
@@ -26,7 +33,15 @@ public class Runner implements Serializable {
     /**
      * 参加したレース
      */
-    private List<Race> races;
+    private List<Race> races = new ArrayList<>();
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -89,6 +104,16 @@ public class Runner implements Serializable {
         }
         return true;
     }
-    
-    
+
+    public Object createOutputData() {
+        //FIXME:ひとまず動作確認用の実装をしました。
+        OutputData data = new OutputData();
+        data.setContents(this.toString());
+        
+        return data;
+    }
+
+    public void add(Race race) {
+        this.races.add(race);
+    }
 }
