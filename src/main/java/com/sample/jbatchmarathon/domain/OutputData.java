@@ -7,6 +7,9 @@ package com.sample.jbatchmarathon.domain;
  */
 public class OutputData {
     
+    /**
+     * アウトプットデータのコンテンツです。
+     */
     private String contents;
 
     public String getContents() {

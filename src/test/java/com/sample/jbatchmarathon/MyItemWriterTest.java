@@ -1,7 +1,6 @@
 package com.sample.jbatchmarathon;
 
 import com.sample.jbatchmarathon.domain.OutputData;
-import com.sample.jbatchmarathon.domain.Runner;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -9,7 +8,7 @@ import java.util.logging.Logger;
 import javax.batch.runtime.context.JobContext;
 import static mockit.Deencapsulation.setField;
 import mockit.Mocked;
-import mockit.NonStrictExpectations;
+import mockit.Expectations;
 import mockit.integration.junit4.JMockit;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -59,7 +58,7 @@ public class MyItemWriterTest {
         final String fileName = "c:/temp/test_output.txt";
         
         // Mockの振る舞いを記述します。
-        new NonStrictExpectations() {
+        new Expectations() {
             {
                 jobContext.getProperties().getProperty("output_file");
                 result = fileName;

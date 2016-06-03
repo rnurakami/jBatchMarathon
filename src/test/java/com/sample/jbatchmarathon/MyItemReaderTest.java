@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 import javax.batch.runtime.context.JobContext;
 import static mockit.Deencapsulation.setField;
 import mockit.Mocked;
-import mockit.NonStrictExpectations;
+import mockit.Expectations;
 import mockit.integration.junit4.JMockit;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -56,7 +56,7 @@ public class MyItemReaderTest {
         final String fileName = "c:/temp/input.csv";
         
         // Mockの振る舞いを記述します。
-        new NonStrictExpectations() {
+        new Expectations() {
             {
                 jobContext.getProperties().getProperty("input_file");
                 result = fileName;
